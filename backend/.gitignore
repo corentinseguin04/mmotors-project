@@ -1,0 +1,6 @@
+venv/
+__pycache__/
+*.pyc
+mmotors.db
+.vscode/
+node_modules/
