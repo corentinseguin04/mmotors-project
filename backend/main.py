@@ -112,3 +112,109 @@ def login_user(
             "role": db_user.role
         }
     }
+
+@app.post("/dossiers")
+def create_dossier(
+    dossier: schemas.DossierCreate,
+    db: Session = Depends(get_db)
+):
+    new_dossier = models.Dossier(
+        user_email=dossier.user_email,
+        vehicle_id=dossier.vehicle_id,
+        type_demande=dossier.type_demande,
+        statut="en_attente"
+    )
+
+    db.add(new_dossier)
+    db.commit()
+    db.refresh(new_dossier)
+
+    return new_dossier
+
+
+@app.get("/dossiers")
+def get_dossiers(
+    db: Session = Depends(get_db)
+):
+    return db.query(models.Dossier).all()
+
+
+@app.put("/dossiers/{dossier_id}/validate")
+def validate_dossier(
+    dossier_id: int,
+    db: Session = Depends(get_db)
+):
+    dossier = db.query(models.Dossier).filter(
+        models.Dossier.id == dossier_id
+    ).first()
+
+    if not dossier:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
+    dossier.statut = "validé"
+    db.commit()
+    db.refresh(dossier)
+
+    return dossier
+
+
+@app.put("/dossiers/{dossier_id}/refuse")
+def refuse_dossier(
+    dossier_id: int,
+    db: Session = Depends(get_db)
+):
+    dossier = db.query(models.Dossier).filter(
+        models.Dossier.id == dossier_id
+    ).first()
+
+    if not dossier:
+        raise HTTPException(status_code=404, detail="Dossier introuvable")
+
+    dossier.statut = "refusé"
+    db.commit()
+    db.refresh(dossier)
+
+    return dossier
+
+@app.put("/vehicles/{vehicle_id}")
+def update_vehicle(
+    vehicle_id: int,
+    vehicle: schemas.VehicleCreate,
+    db: Session = Depends(get_db)
+):
+    db_vehicle = db.query(models.Vehicle).filter(
+        models.Vehicle.id == vehicle_id
+    ).first()
+
+    if not db_vehicle:
+        raise HTTPException(status_code=404, detail="Véhicule introuvable")
+
+    db_vehicle.marque = vehicle.marque
+    db_vehicle.modele = vehicle.modele
+    db_vehicle.prix = vehicle.prix
+    db_vehicle.type_offre = vehicle.type_offre
+
+    db.commit()
+    db.refresh(db_vehicle)
+
+    return db_vehicle
+
+
+@app.delete("/vehicles/{vehicle_id}")
+def delete_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db)
+):
+    db_vehicle = db.query(models.Vehicle).filter(
+        models.Vehicle.id == vehicle_id
+    ).first()
+
+    if not db_vehicle:
+        raise HTTPException(status_code=404, detail="Véhicule introuvable")
+
+    db.delete(db_vehicle)
+    db.commit()
+
+    return {
+        "message": "Véhicule supprimé avec succès"
+    }

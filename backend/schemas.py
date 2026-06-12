@@ -34,4 +34,19 @@ class User(BaseModel):
     class Config:
         from_attributes = True
 
+class DossierCreate(BaseModel):
+    user_email: str
+    vehicle_id: int
+    type_demande: str
+
+
+class Dossier(BaseModel):
+    id: int
+    user_email: str
+    vehicle_id: int
+    type_demande: str
+    statut: str
+
+    class Config:
+        from_attributes = True
         

@@ -20,3 +20,12 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     mot_de_passe = Column(String)
     role = Column(String)
+
+class Dossier(Base):
+    __tablename__ = "dossiers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String)
+    vehicle_id = Column(Integer)
+    type_demande = Column(String)
+    statut = Column(String, default="en_attente")
