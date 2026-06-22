@@ -1,10 +1,18 @@
+# Environnement virtuel
 venv/
+
+# Fichiers Python compilés
 __pycache__/
 *.pyc
-mmotors.db
-.vscode/
-node_modules/
+
+# Base de données locale
+*.db
+
+# Variables d'environnement
 .env
-__pycache__/
-*.pyc
-venv/
+
+# Configuration VS Code
+.vscode/
+
+# Dépendances frontend
+node_modules/
