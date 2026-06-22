@@ -4,3 +4,7 @@ __pycache__/
 mmotors.db
 .vscode/
 node_modules/
+.env
+__pycache__/
+*.pyc
+venv/
